@@ -3,6 +3,7 @@ package biz.lermitage.oga.util;
 import biz.lermitage.oga.cfg.Definitions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.github.pixee.security.BoundedLineReader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,10 +32,10 @@ public class IOTools {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         try (BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-            String line = rd.readLine();
+            String line = BoundedLineReader.readLine(rd, 1000000);
             while (line != null) {
                 content.append(line);
-                line = rd.readLine();
+                line = BoundedLineReader.readLine(rd, 1000000);
             }
         }
         return content.toString();
